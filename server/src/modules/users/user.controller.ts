@@ -20,7 +20,7 @@ export class UserController {
     try {
       const { id } = req.params;
       const { role } = req.body;
-      const user = await userService.changeRole(id, role);
+      const user = await userService.changeRole(id as string, role);
       sendSuccess(res, user, 'User role updated successfully');
     } catch (error) {
       next(error);
@@ -30,7 +30,7 @@ export class UserController {
   async toggleStatus(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const user = await userService.toggleStatus(id);
+      const user = await userService.toggleStatus(id as string);
       sendSuccess(res, user, `User ${user.isActive ? 'activated' : 'deactivated'} successfully`);
     } catch (error) {
       next(error);

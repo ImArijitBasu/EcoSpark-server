@@ -24,7 +24,7 @@ export class IdeaController {
 
   async getIdeaById(req: Request, res: Response, next: NextFunction) {
     try {
-      const idea = await ideaService.getIdeaById(req.params.id, req.user?.id);
+      const idea = await ideaService.getIdeaById(req.params.id as string, req.user?.id);
       sendSuccess(res, idea, 'Idea retrieved successfully');
     } catch (error) {
       next(error);
@@ -86,7 +86,7 @@ export class IdeaController {
         updateData.images = imageUrls;
       }
 
-      const idea = await ideaService.updateIdea(req.params.id, req.user!.id, updateData);
+      const idea = await ideaService.updateIdea(req.params.id as string, req.user!.id, updateData);
       sendSuccess(res, idea, 'Idea updated successfully');
     } catch (error) {
       next(error);
@@ -96,7 +96,7 @@ export class IdeaController {
   async deleteIdea(req: Request, res: Response, next: NextFunction) {
     try {
       const isAdmin = req.user!.role === 'ADMIN';
-      await ideaService.deleteIdea(req.params.id, req.user!.id, isAdmin);
+      await ideaService.deleteIdea(req.params.id as string, req.user!.id, isAdmin);
       sendSuccess(res, null, 'Idea deleted successfully');
     } catch (error) {
       next(error);
@@ -105,7 +105,7 @@ export class IdeaController {
 
   async submitForReview(req: Request, res: Response, next: NextFunction) {
     try {
-      const idea = await ideaService.submitForReview(req.params.id, req.user!.id);
+      const idea = await ideaService.submitForReview(req.params.id as string, req.user!.id);
       sendSuccess(res, idea, 'Idea submitted for review');
     } catch (error) {
       next(error);
@@ -115,7 +115,7 @@ export class IdeaController {
   async updateStatus(req: Request, res: Response, next: NextFunction) {
     try {
       const { status, adminFeedback } = req.body;
-      const idea = await ideaService.updateStatus(req.params.id, status, adminFeedback);
+      const idea = await ideaService.updateStatus(req.params.id as string, status, adminFeedback);
       sendSuccess(res, idea, `Idea ${status.toLowerCase()} successfully`);
     } catch (error) {
       next(error);

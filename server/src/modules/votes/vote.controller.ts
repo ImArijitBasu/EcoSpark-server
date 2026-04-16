@@ -13,7 +13,7 @@ export class VoteController {
         return;
       }
 
-      const result = await voteService.toggleVote(req.user!.id, ideaId, type);
+      const result = await voteService.toggleVote(req.user!.id, ideaId as string, type);
       sendSuccess(res, result, `Vote ${result.action} successfully`);
     } catch (error) {
       next(error);
@@ -23,7 +23,7 @@ export class VoteController {
   async removeVote(req: Request, res: Response, next: NextFunction) {
     try {
       const { ideaId } = req.params;
-      const result = await voteService.removeVote(req.user!.id, ideaId);
+      const result = await voteService.removeVote(req.user!.id, ideaId as string);
       sendSuccess(res, result, 'Vote removed successfully');
     } catch (error) {
       next(error);
@@ -33,7 +33,7 @@ export class VoteController {
   async getUserVote(req: Request, res: Response, next: NextFunction) {
     try {
       const { ideaId } = req.params;
-      const vote = await voteService.getUserVote(req.user!.id, ideaId);
+      const vote = await voteService.getUserVote(req.user!.id, ideaId as string);
       sendSuccess(res, vote, 'User vote retrieved');
     } catch (error) {
       next(error);

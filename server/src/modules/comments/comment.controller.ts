@@ -6,7 +6,7 @@ export class CommentController {
   async getComments(req: Request, res: Response, next: NextFunction) {
     try {
       const { ideaId } = req.params;
-      const comments = await commentService.getComments(ideaId);
+      const comments = await commentService.getComments(ideaId as string);
       sendSuccess(res, comments, 'Comments retrieved successfully');
     } catch (error) {
       next(error);
@@ -25,7 +25,7 @@ export class CommentController {
 
       const comment = await commentService.createComment(
         req.user!.id,
-        ideaId,
+        ideaId as string,
         content.trim(),
         parentId
       );
@@ -38,7 +38,7 @@ export class CommentController {
   async deleteComment(req: Request, res: Response, next: NextFunction) {
     try {
       const { commentId } = req.params;
-      const result = await commentService.deleteComment(commentId);
+      const result = await commentService.deleteComment(commentId as string);
       sendSuccess(res, result, 'Comment deleted successfully');
     } catch (error) {
       next(error);

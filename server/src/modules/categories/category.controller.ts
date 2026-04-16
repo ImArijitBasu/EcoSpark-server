@@ -23,7 +23,7 @@ export class CategoryController {
 
   async update(req: Request, res: Response, next: NextFunction) {
     try {
-      const category = await categoryService.update(req.params.id, req.body);
+      const category = await categoryService.update(req.params.id as string, req.body);
       sendSuccess(res, category, 'Category updated successfully');
     } catch (error) {
       next(error);
@@ -32,7 +32,7 @@ export class CategoryController {
 
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
-      await categoryService.delete(req.params.id);
+      await categoryService.delete(req.params.id as string);
       sendSuccess(res, null, 'Category deleted successfully');
     } catch (error) {
       next(error);
