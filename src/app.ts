@@ -35,7 +35,7 @@ app.use(express.urlencoded({ extended: true }));
 // ── Rate Limiting ───────────────────────────────────────────
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 20,
+  max: 100, // Increased from 20 to 100
   message: { success: false, message: 'Too many requests, please try again later' },
 });
 

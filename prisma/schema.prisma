@@ -113,7 +113,7 @@ model Comment {
   idea   Idea   @relation(fields: [ideaId], references: [id], onDelete: Cascade)
 
   parentId String?   @map("parent_id")
-  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
   replies  Comment[] @relation("CommentReplies")
 
   @@map("comments")

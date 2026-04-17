@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { authService } from './auth.service';
 import { sendSuccess, sendCreated } from '../../utils/apiResponse';
+import { uploadToCloudinary } from '../../middleware/upload';
 
 export class AuthController {
   async register(req: Request, res: Response, next: NextFunction) {
@@ -42,8 +43,24 @@ export class AuthController {
 
   async updateProfile(req: Request, res: Response, next: NextFunction) {
     try {
-      const user = await authService.updateProfile(req.user!.id, req.body);
+      const updateData = { ...req.body };
+      
+      if (req.file) {
+        updateData.avatar = await uploadToCloudinary(req.file.buffer, 'ecospark/profiles');
+      }
+
+      const user = await authService.updateProfile(req.user!.id, updateData);
       sendSuccess(res, user, 'Profile updated successfully');
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async changePassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      await authService.changePassword(req.user!.id, currentPassword, newPassword);
+      sendSuccess(res, null, 'Password changed successfully');
     } catch (error) {
       next(error);
     }

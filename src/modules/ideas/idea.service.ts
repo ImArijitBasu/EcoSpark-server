@@ -10,6 +10,7 @@ interface GetIdeasQuery {
   isPaid?: string;
   sort?: string;
   author?: string;
+  authorName?: string;
   minVotes?: string;
 }
 
@@ -49,9 +50,16 @@ export class IdeaService {
       where.isPaid = query.isPaid === 'true';
     }
 
-    // Filter by author
+    // Filter by author ID
     if (query.author) {
       where.authorId = query.author;
+    }
+
+    // Filter by author name
+    if (query.authorName) {
+      where.author = {
+        name: { contains: query.authorName, mode: 'insensitive' },
+      };
     }
 
     // Filter by min votes

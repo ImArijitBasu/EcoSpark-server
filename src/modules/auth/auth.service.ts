@@ -171,6 +171,20 @@ export class AuthService {
 
     return user;
   }
+
+  async changePassword(userId: string, currentPassword: string, newPassword: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new AppError('User not found', 404);
+
+    const isMatch = await comparePassword(currentPassword, user.password);
+    if (!isMatch) throw new AppError('Incorrect current password', 401);
+
+    const hashedPassword = await hashPassword(newPassword);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+  }
 }
 
 export const authService = new AuthService();
