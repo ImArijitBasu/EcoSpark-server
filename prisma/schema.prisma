@@ -48,6 +48,8 @@ model Category {
   slug        String   @unique
   description String?
   icon        String?
+  miniImage   String?  @map("mini_image")
+  bannerImage String?  @map("banner_image")
   createdAt   DateTime @default(now())
 
   ideas Idea[]

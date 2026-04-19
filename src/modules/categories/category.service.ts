@@ -40,6 +40,8 @@ export class CategoryService {
         slug,
         description: data.description,
         icon: data.icon,
+        miniImage: data.miniImage,
+        bannerImage: data.bannerImage,
       },
     });
   }
