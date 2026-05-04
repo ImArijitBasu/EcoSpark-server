@@ -81,9 +81,9 @@ model Idea {
   updatedAt        DateTime   @updatedAt @map("updated_at")
 
   authorId   String   @map("author_id")
-  author     User     @relation(fields: [authorId], references: [id])
+  author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   categoryId String   @map("category_id")
-  category   Category @relation(fields: [categoryId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   votes    Vote[]
   comments Comment[]
@@ -101,7 +101,7 @@ model Vote {
   createdAt DateTime @default(now()) @map("created_at")
 
   userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   ideaId String @map("idea_id")
   idea   Idea   @relation(fields: [ideaId], references: [id], onDelete: Cascade)
 
@@ -116,7 +116,7 @@ model Comment {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   ideaId String @map("idea_id")
   idea   Idea   @relation(fields: [ideaId], references: [id], onDelete: Cascade)
 
@@ -136,9 +136,9 @@ model Payment {
   createdAt       DateTime @default(now()) @map("created_at")
 
   userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   ideaId String @map("idea_id")
-  idea   Idea   @relation(fields: [ideaId], references: [id])
+  idea   Idea   @relation(fields: [ideaId], references: [id], onDelete: Cascade)
 
   @@unique([userId, ideaId])
   @@map("payments")
