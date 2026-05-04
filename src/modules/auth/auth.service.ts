@@ -65,6 +65,9 @@ export class AuthService {
     }
 
     // Compare password
+    if (!user.password) {
+      throw new AppError('This account uses social login. Please sign in with Google.', 401);
+    }
     const isMatch = await comparePassword(data.password, user.password);
 
     if (!isMatch) {
@@ -176,6 +179,9 @@ export class AuthService {
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new AppError('User not found', 404);
 
+    if (!user.password) {
+      throw new AppError('Cannot change password for social login accounts', 400);
+    }
     const isMatch = await comparePassword(currentPassword, user.password);
     if (!isMatch) throw new AppError('Incorrect current password', 401);
 
