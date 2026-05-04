@@ -31,11 +31,34 @@ async function main() {
         email: adminEmail,
         password: hashedPassword,
         role: 'ADMIN',
+        accounts: {
+          create: {
+            accountId: adminEmail,
+            providerId: 'credential',
+            password: hashedPassword,
+          }
+        }
       },
     });
     console.log(`  ✅ Admin created: ${admin.email}`);
   } else {
     console.log(`  ⏭️  Admin already exists: ${existingAdmin.email}`);
+    // Ensure Better Auth credential account exists
+    const existingAccount = await prisma.account.findFirst({
+      where: { userId: existingAdmin.id, providerId: 'credential' }
+    });
+    if (!existingAccount) {
+      const hashedPassword = await bcrypt.hash(adminPassword, 12);
+      await prisma.account.create({
+        data: {
+          userId: existingAdmin.id,
+          accountId: adminEmail,
+          providerId: 'credential',
+          password: hashedPassword,
+        }
+      });
+      console.log(`  ✅ Admin Account injected for Better Auth.`);
+    }
   }
 
   // ── Create Default Categories ────────────────────────────
@@ -105,13 +128,39 @@ async function main() {
     if (!existing) {
       const hashedPassword = await bcrypt.hash(u.password, 12);
       const user = await prisma.user.create({
-        data: { ...u, password: hashedPassword, role: 'MEMBER' },
+        data: { 
+          ...u, 
+          password: hashedPassword, 
+          role: 'MEMBER',
+          accounts: {
+            create: {
+              accountId: u.email,
+              providerId: 'credential',
+              password: hashedPassword,
+            }
+          }
+        },
       });
       createdUsers.push(user);
       console.log(`  ✅ User created: ${user.email}`);
     } else {
       createdUsers.push(existing);
       console.log(`  ⏭️  User already exists: ${existing.email}`);
+      // Ensure Better Auth credential account exists
+      const existingAccount = await prisma.account.findFirst({
+        where: { userId: existing.id, providerId: 'credential' }
+      });
+      if (!existingAccount) {
+        const hashedPassword = await bcrypt.hash(u.password, 12);
+        await prisma.account.create({
+          data: {
+            userId: existing.id,
+            accountId: u.email,
+            providerId: 'credential',
+            password: hashedPassword,
+          }
+        });
+      }
     }
   }
 

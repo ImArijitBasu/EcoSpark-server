@@ -7,9 +7,6 @@ import { registerSchema, loginSchema, refreshSchema, updateProfileSchema } from 
 
 const router = Router();
 
-router.post('/register', validate(registerSchema), authController.register);
-router.post('/login', validate(loginSchema), authController.login);
-router.post('/refresh', validate(refreshSchema), authController.refreshToken);
 router.get('/me', authenticate, authController.getProfile);
 router.patch('/profile', authenticate, upload.single('avatar'), authController.updateProfile);
 router.patch('/change-password', authenticate, authController.changePassword);

@@ -1,46 +1,41 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyAccessToken } from '../utils/jwt';
+import { auth } from '../config/auth';
 import { sendUnauthorized } from '../utils/apiResponse';
 
-export function authenticate(req: Request, res: Response, next: NextFunction): void {
+export async function authenticate(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const authHeader = req.headers.authorization;
+    const session = await auth.api.getSession({
+      headers: req.headers as any,
+    });
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      sendUnauthorized(res, 'Access token is required');
+    if (!session || !session.user) {
+      sendUnauthorized(res, 'Authentication required');
       return;
     }
 
-    const token = authHeader.split(' ')[1];
-    const decoded = verifyAccessToken(token);
-
-    if (!decoded.isActive) {
+    if (!session.user.isActive) {
       sendUnauthorized(res, 'Your account has been deactivated');
       return;
     }
 
-    req.user = decoded;
+    req.user = session.user as any;
     next();
   } catch (error: any) {
-    if (error.name === 'TokenExpiredError') {
-      sendUnauthorized(res, 'Access token has expired');
-      return;
-    }
-    sendUnauthorized(res, 'Invalid access token');
+    sendUnauthorized(res, 'Invalid session');
   }
 }
 
 /**
  * Optional authentication - attaches user if token exists but doesn't block
  */
-export function optionalAuth(req: Request, res: Response, next: NextFunction): void {
+export async function optionalAuth(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const authHeader = req.headers.authorization;
+    const session = await auth.api.getSession({
+      headers: req.headers as any,
+    });
 
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.split(' ')[1];
-      const decoded = verifyAccessToken(token);
-      req.user = decoded;
+    if (session && session.user) {
+      req.user = session.user as any;
     }
 
     next();
@@ -49,3 +44,4 @@ export function optionalAuth(req: Request, res: Response, next: NextFunction): v
     next();
   }
 }
+

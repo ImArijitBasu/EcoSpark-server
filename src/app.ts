@@ -8,6 +8,8 @@ import { errorHandler } from './middleware/errorHandler';
 
 // Route imports
 import authRoutes from './modules/auth/auth.routes';
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./config/auth";
 import userRoutes from './modules/users/user.routes';
 import categoryRoutes from './modules/categories/category.routes';
 import ideaRoutes from './modules/ideas/idea.routes';
@@ -58,6 +60,7 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.all("/api/auth/*", toNodeHandler(auth));
 app.use('/api/users', userRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/ideas', ideaRoutes);
